@@ -110,6 +110,7 @@ def test_temp():
 
 
 if __name__ == "__main__":
+    print("Start testing")
     print(f"test_count_chars {test_count_chars()}")
     print(f"test_count_sigma {test_count_sigma()}")
     print(f"test_number_to_base {test_number_to_base()}")
