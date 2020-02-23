@@ -1,4 +1,7 @@
+import random
 from knuth import *
+
+random.seed(42)
 
 
 def test_count_chars():
@@ -51,12 +54,13 @@ def test_encode_knuth():
 
 
 def test_calc_indexes():
-    res = (calc_indexes(2, 16) == [16, 8, 6])
+    res = (calc_indexes(2, 16) == [16, 10])
     return res
 
 
 def test_split_string():
-    res = (split_string("001000110101011111011000101000010111", 2, 16) == ["0010001101010111", "11011000", "101000", "010111"])
+    res = (split_string("0010001101010111110110001010000101110111111100000001000000001011111111", 2, 16) == ['0010001101010111', '1101100010', '10000101110111111100000001000000001011111111']
+)
     return res
 
 
@@ -79,16 +83,52 @@ def test_decode_knuth():
     return res
 
 
-if __name__=="__main__":
+def test_stress():
+    for i in range(1000):
+        num = random.randint(0, 2 ** 1000 - 1)
+        for base in [2, 3, 4, 5, 6, 7, 8, 9, 10]:  # , 3, 4, 5, 8
+            length = math.ceil(math.log(num+base, base))
+            length += (base - (length % base))
+            assert length % base == 0
+
+            vec = number_to_base(num, base, length)
+            count_c = count_chars(encode_knuth(vec, base), base)
+            if max(count_c) != min(count_c):
+                print(f"vec {vec} \n enc {encode_knuth(vec, base)} \n count {count_c}")
+                return False
+            if decode_knuth(encode_knuth(vec, base), base, length) != vec:
+                print(f"error: {vec} not encoded/decoded correctly for base {base}, length {length}")
+                return False
+
+    return True
+
+def test_temp():
+    v = encode_knuth("000202212000222200000000000022220200202022202202020202222022202020200000222", 3)
+    res = (decode_knuth(v, 3, 75) == "000202212000222200000000000022220200202022202202020202222022202020200000222")
+
+    return res
+
+
+if __name__ == "__main__":
     print(f"test_count_chars {test_count_chars()}")
     print(f"test_count_sigma {test_count_sigma()}")
     print(f"test_number_to_base {test_number_to_base()}")
+
     print(f"test_calc_indexes {test_calc_indexes()}")
     print(f"test_split_string {test_split_string()}")
     print(f"test_sub_decode {test_sub_decode()}")
+
+    print(f"test_encode_knuth {test_encode_knuth()}")
     print(f"test_decode_knuth {test_decode_knuth()}")
-    enc = encode_knuth("012012012012021121201201200010101010222", 3)
+
+    """enc = encode_knuth("012012012012021121201201200010101010222", 3)
     print(enc, len(enc))
     dec = decode_knuth(enc, 3, 39)
     print(dec == "012012012012021121201201200010101010222", dec)
+    """
     test_encode_knuth()
+
+    print(f"test_temp {test_temp()}")
+
+    print(f"test_stress {test_stress()}")
+    print("DONE!")

@@ -30,8 +30,15 @@ def balance_string(string, alphabet_size):
     return "".join(res)
 
 
+def find_replacement(greater_than_goal, goal, count_array):
+    if greater_than_goal:
+        return next(i for i, x in enumerate(count_array) if x < goal)
+    else:
+        return next(i for i, x in enumerate(count_array) if x > goal)
+
+
 def encode_knuth(string, alphabet_size):
-    if len(string) <= alphabet_size * math.ceil(math.log(len(string), alphabet_size)):
+    if len(string) <= alphabet_size * (math.ceil(math.log(len(string), alphabet_size))+1):
         return balance_string(string, alphabet_size)
 
     string = [int(c) for c in string]
@@ -39,25 +46,28 @@ def encode_knuth(string, alphabet_size):
     addition_string = []
     for sigma in range(alphabet_size - 1, -1, -1):
         sigma_count = count_sigma(string, sigma)
-
+        sigma_replacement = sigma if sigma_count == appearance_goal else \
+            find_replacement(sigma_count > appearance_goal, appearance_goal, count_chars(string, alphabet_size)[:sigma+1])
         for idx, char in enumerate(string):
             if sigma_count == appearance_goal:
-                addition_string += number_to_base(idx, alphabet_size, math.ceil(math.log(len(string), alphabet_size)))
+                addition_string += (str(sigma_replacement) +
+                                    number_to_base(idx, alphabet_size, math.ceil(math.log(len(string), alphabet_size))))
                 break
-            if char <= sigma:
-                string[idx] = sigma - char
-                if char == sigma:
-                    sigma_count -= 1
-                if char == 0:
-                    sigma_count += 1
+            if char == sigma:
+                string[idx] = sigma_replacement
+                sigma_count -= 1
+            elif char == sigma_replacement:
+                string[idx] = sigma
+                sigma_count += 1
+
     string = [str(c) for c in string]
     return "".join(string) + encode_knuth("".join(addition_string), alphabet_size)
 
 
 def calc_indexes(alphabet_size, orig_length):
     indexes = [orig_length]
-    while indexes[-1] > alphabet_size * math.ceil(math.log(indexes[-1], alphabet_size)):
-        indexes += [math.ceil(math.log(indexes[-1], alphabet_size)) * alphabet_size]
+    while indexes[-1] > alphabet_size * (math.ceil(math.log(indexes[-1], alphabet_size)) + 1):
+        indexes += [(math.ceil(math.log(indexes[-1], alphabet_size)) + 1) * alphabet_size]
 
     return indexes
 
@@ -75,11 +85,15 @@ def sub_decode(encoded_str, index_str, alphabet_size):
     index_str = index_str[:-(len(index_str) // alphabet_size)]
     encoded_list = [int(c) for c in encoded_str]
     for sigma in range(1, alphabet_size):
-        index = int(index_str[-(len(index_str) // (alphabet_size - sigma)):],
-                    base=alphabet_size)
+        sigma_index = (index_str[-(len(index_str) // (alphabet_size - sigma)):])
+        sigma_replacement = int(sigma_index[0])
+        index = int(sigma_index[1:], base=alphabet_size)
         for i in range(index):
-            if encoded_list[i] <= sigma:
-                encoded_list[i] = sigma - encoded_list[i]
+            if encoded_list[i] == sigma:
+                encoded_list[i] = sigma_replacement
+            elif encoded_list[i] == sigma_replacement:
+                encoded_list[i] = sigma
+
         index_str = index_str[:-(len(index_str) // (alphabet_size - sigma))]
 
     return "".join([str(c) for c in encoded_list])
