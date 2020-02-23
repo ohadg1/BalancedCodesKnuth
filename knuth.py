@@ -41,13 +41,13 @@ def sub_num_iterations(string_length, alphabet_size):
     if string_length <= alphabet_size * (math.ceil(math.log(string_length, alphabet_size))+1):
         return (string_length * alphabet_size, 1)
     cont = sub_num_iterations(alphabet_size * (math.ceil(math.log(string_length, alphabet_size))+1), alphabet_size)
-    if cont[0] < string_length * alphabet_size:
+    if string_length + cont[0] < string_length * alphabet_size:
         return string_length + cont[0], 1 + cont[1]
     return string_length * alphabet_size, 1
 
 
-def num_iterations(string, alphabet_size):
-    return sub_num_iterations(len(string), alphabet_size)[1]
+def num_iterations(string_length, alphabet_size):
+    return sub_num_iterations(string_length, alphabet_size)[1]
 
 
 def sub_encode_knuth(string, alphabet_size, iterations_counter):
@@ -78,14 +78,13 @@ def sub_encode_knuth(string, alphabet_size, iterations_counter):
 
 
 def encode_knuth(string, alphabet_size):
-    return sub_encode_knuth(string, alphabet_size, num_iterations(string, alphabet_size))
+    return sub_encode_knuth(string, alphabet_size, num_iterations(len(string), alphabet_size))
 
 
 def calc_indexes(alphabet_size, orig_length):
     indexes = [orig_length]
-    while indexes[-1] > alphabet_size * (math.ceil(math.log(indexes[-1], alphabet_size)) + 1):
+    for i in range(num_iterations(orig_length, alphabet_size) - 1):
         indexes += [(math.ceil(math.log(indexes[-1], alphabet_size)) + 1) * alphabet_size]
-
     return indexes
 
 
@@ -125,31 +124,5 @@ def decode_knuth(string, alphabet_size, orig_length):
 
     return strings[0]
     
-    
-def encode_ohad(string, alphabet_size):
-    if len(string) <= alphabet_size * (math.ceil(math.log(len(string), alphabet_size))+1):
-        return balance_string(string, alphabet_size)
-
-    string = [int(c) for c in string]
-    appearance_goal = len(string) // alphabet_size
-    addition_string = []
-    for sigma in range(alphabet_size - 1, -1, -1):
-        sigma_count = count_sigma(string, sigma)
-        sigma_replacement = sigma if sigma_count == appearance_goal else \
-            find_replacement(sigma_count > appearance_goal, appearance_goal, count_chars(string, alphabet_size)[:sigma+1])
-        for idx, char in enumerate(string):
-            if sigma_count == appearance_goal:
-                addition_string += (str(sigma_replacement) +
-                                    number_to_base(idx, alphabet_size, math.ceil(math.log(len(string), alphabet_size))))
-                break
-            if char == sigma:
-                string[idx] = sigma_replacement
-                sigma_count -= 1
-            elif char == sigma_replacement:
-                string[idx] = sigma
-                sigma_count += 1
-
-    string = [str(c) for c in string]
-    return "".join(string) + encode_ohad("".join(addition_string), alphabet_size)
 
 
