@@ -101,6 +101,30 @@ def test_stress():
                 return False
 
     return True
+    
+
+def test_zip():
+    for i in range(20):
+        num = random.randint(0, 2 ** 1000 - 1)
+        for base in [3]:
+            length = math.ceil(math.log(num+base, base))
+            length += (base - (length % base))
+            assert length % base == 0
+
+            vec = number_to_base(num, base, length)
+            count_c = count_chars(encode_knuth(vec, base), base)
+            if max(count_c) != min(count_c):
+                print(f"vec {vec} \n enc {encode_knuth(vec, base)} \n count {count_c}")
+                return False
+            if decode_knuth(encode_knuth(vec, base), base, length) != vec:
+                print(f"error: {vec} not encoded/decoded correctly for base {base}, length {length}")
+                return False
+            if len(encode_knuth(vec, base)) < len(encode_ohad(vec, base)):
+                print ("shorter! orig lengt:{}, new:{}, ohad:{}".format(length, len(encode_knuth(vec, base)), len(encode_ohad(vec, base))))
+            else:
+                print ("oof {}".format(length))
+
+    return True
 
 def test_temp():
     v = encode_knuth("000202212000222200000000000022220200202022202202020202222022202020200000222", 3)
