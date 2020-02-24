@@ -53,6 +53,13 @@ def test_encode_knuth():
     return True
 
 
+def test_calculate_output_length():
+    res = (len(encode_knuth("002202011", 3)) == calculate_output_length(9, 3))
+    res = res and (len(encode_knuth("002202011000222120110110100101020201020111001", 3)) == calculate_output_length(45, 3))
+
+    return res
+
+
 def test_calc_indexes():
     res = (calc_indexes(2, 326) == [326, 20])
     res = res and (calc_indexes(2, 16) == [16])
@@ -120,6 +127,7 @@ if __name__ == "__main__":
     print(f"test_calc_indexes {test_calc_indexes()}")
     print(f"test_split_string {test_split_string()}")
     print(f"test_sub_decode {test_sub_decode()}")
+    print(f"test_calculate_output_length {test_calculate_output_length()}")
 
     print(f"test_encode_knuth {test_encode_knuth()}")
     print(f"test_decode_knuth {test_decode_knuth()}")

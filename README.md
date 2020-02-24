@@ -6,6 +6,7 @@ no. 1, pp. 51–53, Jan. 1986.
 Our implementation supports various input lengths and alphabet size of upto 10 symbols.
 We also added some improvements for the algorithm, making it better for various cases.
 
+A documented details can be seen in *description.pdf* file.
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -17,7 +18,7 @@ This project requires Python 3 for running it. It does not use any special libra
 ### Installing
 
 Install python3 and download the git repository. 
-After downloading, you can import from "knuth.py" and use the functions: encode_knuth, decode_knuth
+After downloading, you can import from "knuth.py" and use the functions: encode_knuth, decode_knuth.
 
 ```
 from knuth import *
@@ -33,29 +34,24 @@ print(decoded)
 
 The output suould be:
 ```
-221200110110000221111002222
+001000110112111221220222002
 001000110
 ```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+The tests for this project can be found in *test.py* file.
+Simply run the file and watch the test run. If a test fail you will be notified by the output.
+### Some Important tests
 
-### Break down into end to end tests
+#### test_encode_knuth
+This test checks some basic vectors and see that they are encoded correctly.
 
-Explain what these tests test and why
+#### test_decode_knuth
+This test checks that vectors are decoded correctly by the decoding function
 
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+#### test_stress
+This test generated random vectors and checks that they are encoded correctly and also decoded correctly. Additionally, there is a check that assures that the result of the encoding is balanced.
 
 ## Authors
 

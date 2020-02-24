@@ -65,7 +65,7 @@ def sub_num_iterations(string_length, alphabet_size):
     return a tuple - the first entry is the balanced length, the second entry is number of iterations
     """
     if string_length <= alphabet_size * (math.ceil(math.log(string_length, alphabet_size))+1):
-        return (string_length * alphabet_size, 1)
+        return string_length * alphabet_size, 1
     cont = sub_num_iterations(alphabet_size * (math.ceil(math.log(string_length, alphabet_size))+1), alphabet_size)
     if string_length + cont[0] < string_length * alphabet_size:
         return string_length + cont[0], 1 + cont[1]
@@ -77,6 +77,10 @@ def num_iterations(string_length, alphabet_size):
     computes how many iterations of nested balancing is the best.
     """
     return sub_num_iterations(string_length, alphabet_size)[1]
+
+
+def calculate_output_length(string_length, alphabet_size):
+    return sub_num_iterations(string_length, alphabet_size)[0]
 
 
 def sub_encode_knuth(string, alphabet_size, iterations_counter):
