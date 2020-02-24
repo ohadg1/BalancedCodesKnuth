@@ -54,13 +54,14 @@ def test_encode_knuth():
 
 
 def test_calc_indexes():
-    res = (calc_indexes(2, 16) == [16, 10])
+    res = (calc_indexes(2, 326) == [326, 20])
+    res = res and (calc_indexes(2, 16) == [16])
     return res
 
 
 def test_split_string():
-    res = (split_string("0010001101010111110110001010000101110111111100000001000000001011111111", 2, 16) == ['0010001101010111', '1101100010', '10000101110111111100000001000000001011111111']
-)
+    res = (split_string("0010001101010111110110001010000101110111111100000001000000001011111111", 2, 16) ==
+           ['0010001101010111', '110110001010000101110111111100000001000000001011111111'])
     return res
 
 
@@ -122,8 +123,6 @@ if __name__ == "__main__":
 
     print(f"test_encode_knuth {test_encode_knuth()}")
     print(f"test_decode_knuth {test_decode_knuth()}")
-
-    test_encode_knuth()
 
     print(f"test_temp {test_temp()}")
 
