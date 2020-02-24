@@ -111,7 +111,7 @@ def test_temp():
 
 
 if __name__ == "__main__":
-    print("Start testing")
+    print("Testing\n")
     print(f"test_count_chars {test_count_chars()}")
     print(f"test_count_sigma {test_count_sigma()}")
     print(f"test_number_to_base {test_number_to_base()}")
@@ -123,14 +123,9 @@ if __name__ == "__main__":
     print(f"test_encode_knuth {test_encode_knuth()}")
     print(f"test_decode_knuth {test_decode_knuth()}")
 
-    """enc = encode_knuth("012012012012021121201201200010101010222", 3)
-    print(enc, len(enc))
-    dec = decode_knuth(enc, 3, 39)
-    print(dec == "012012012012021121201201200010101010222", dec)
-    """
     test_encode_knuth()
 
     print(f"test_temp {test_temp()}")
 
     print(f"test_stress {test_stress()}")
-    print("DONE!")
+    print("\nDONE!")
