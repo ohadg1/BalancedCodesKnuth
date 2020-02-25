@@ -5,6 +5,9 @@ random.seed(42)
 
 
 def test_count_chars():
+    """
+    test for function count_chars
+    """
     res = True
     string = "1111112222"
     count = count_chars(string, 3)
@@ -22,6 +25,9 @@ def test_count_chars():
 
 
 def test_count_sigma():
+    """
+    test for function count_sigma
+    """
     res = True
     string = "1111112222"
     count = count_sigma(string, "1")
@@ -37,6 +43,9 @@ def test_count_sigma():
 
 
 def test_number_to_base():
+    """
+    test for function number_to_base
+    """
     x = 17
     res = (number_to_base(x, 2, 7) == "0010001")
     res = res and (number_to_base(x, 3, 7) == "0000122")
@@ -48,12 +57,18 @@ def test_number_to_base():
 
 
 def test_encode_knuth():
+    """
+    test for function encode_knuth
+    """
     res = (encode_knuth("002202011",3) == 102202011000111122220)
 
     return True
 
 
 def test_calculate_output_length():
+    """
+    test for function calculate_output_length
+    """
     res = (len(encode_knuth("002202011", 3)) == calculate_output_length(9, 3))
     res = res and (len(encode_knuth("002202011000222120110110100101020201020111001", 3)) == calculate_output_length(45, 3))
 
@@ -61,23 +76,35 @@ def test_calculate_output_length():
 
 
 def test_calc_indexes():
+    """
+    test for function calc_indexes
+    """
     res = (calc_indexes(2, 326) == [326, 20])
     res = res and (calc_indexes(2, 16) == [16])
     return res
 
 
 def test_split_string():
+    """
+    test for function split_string
+    """
     res = (split_string("0010001101010111110110001010000101110111111100000001000000001011111111", 2, 16) ==
            ['0010001101010111', '110110001010000101110111111100000001000000001011111111'])
     return res
 
 
 def test_sub_decode():
+    """
+    test for function sub_encode
+    """
     res = (sub_decode("102202011", "000100", 3) == "002202011")
     return res
 
 
 def test_decode_knuth():
+    """
+    test for function decode_knuth
+    """
     res = (decode_knuth(encode_knuth("001000110", 3), 3, 9) == "001000110")
 
     res = res and (decode_knuth(encode_knuth("0123402014", 5), 5, 10) == "0123402014")
@@ -92,6 +119,9 @@ def test_decode_knuth():
 
 
 def test_stress():
+    """
+    checks that encoding and decoding work well on random vectors, and that the output is balanced
+    """
     for i in range(1000):
         num = random.randint(0, 2 ** 1000 - 1)
         for base in [2, 3, 4, 5, 6, 7, 8, 9, 10]:  # , 3, 4, 5, 8
@@ -109,13 +139,6 @@ def test_stress():
                 return False
 
     return True
-    
-
-def test_temp():
-    v = encode_knuth("000202212000222200000000000022220200202022202202020202222022202020200000222", 3)
-    res = (decode_knuth(v, 3, 75) == "000202212000222200000000000022220200202022202202020202222022202020200000222")
-
-    return res
 
 
 if __name__ == "__main__":
@@ -131,8 +154,6 @@ if __name__ == "__main__":
 
     print(f"test_encode_knuth {test_encode_knuth()}")
     print(f"test_decode_knuth {test_decode_knuth()}")
-
-    print(f"test_temp {test_temp()}")
 
     print(f"test_stress {test_stress()}")
     print("\nDONE!")
