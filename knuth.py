@@ -37,7 +37,7 @@ def count_sigma(string, sigma):
 def balance_string(string, alphabet_size):
     """
     return a balanced string of @string of length @alphabet_size * (@string length).
-    balancing is done by duplicating @string @alphabet_size times.
+    balancing is done by duplicating @string @alphabet_size times and chancing the symbols cyclicly.
     """
     string = [int(c) for c in string]
     res = []
@@ -80,6 +80,9 @@ def num_iterations(string_length, alphabet_size):
 
 
 def calculate_output_length(string_length, alphabet_size):
+    """
+    computes the length we get after encoding a string of length @string_length.
+    """
     return sub_num_iterations(string_length, alphabet_size)[0]
 
 
@@ -88,18 +91,18 @@ def sub_encode_knuth(string, alphabet_size, iterations_counter):
     encode @string according to knuth's algorithm, when @string is above alphabet {0, ..., alphabet_size - 1}, 
     with @iterations_counter times of nested balancing
     """
-    if iterations_counter == 1:
+    if iterations_counter == 1: #last iteration
         return balance_string(string, alphabet_size)
 
     string = [int(c) for c in string]
     appearance_goal = len(string) // alphabet_size
-    addition_string = []
+    addition_string = [] #the string that contains the indexes and the letters we balanced with
     for sigma in range(alphabet_size - 1, -1, -1):
         sigma_count = count_sigma(string, sigma)
         sigma_replacement = sigma if sigma_count == appearance_goal else \
             find_replacement(sigma_count > appearance_goal, appearance_goal, count_chars(string, alphabet_size)[:sigma+1])
-        for idx, char in enumerate(string):
-            if sigma_count == appearance_goal:
+        for idx, char in enumerate(string): #balance sigma with sigma_replacement
+            if sigma_count == appearance_goal: 
                 addition_string += (str(sigma_replacement) +
                                     number_to_base(idx, alphabet_size, math.ceil(math.log(len(string), alphabet_size))))
                 break
@@ -111,7 +114,7 @@ def sub_encode_knuth(string, alphabet_size, iterations_counter):
                 sigma_count += 1
 
     string = [str(c) for c in string]
-    return "".join(string) + sub_encode_knuth("".join(addition_string), alphabet_size, iterations_counter - 1)
+    return "".join(string) + sub_encode_knuth("".join(addition_string), alphabet_size, iterations_counter - 1) #recursively encode the addition_string
 
 
 def encode_knuth(string, alphabet_size):
@@ -147,10 +150,11 @@ def split_string(string, alphabet_size, orig_length):
 def sub_decode(encoded_str, index_str, alphabet_size):
     """
     decode the @encoded_str string when the indexes are @index_str.
+    this function is one level of decoding.
     """
     index_str = index_str[:-(len(index_str) // alphabet_size)]
     encoded_list = [int(c) for c in encoded_str]
-    for sigma in range(1, alphabet_size):
+    for sigma in range(1, alphabet_size): #decode each letter according to the corresponding letter and index from index_str
         sigma_index = (index_str[-(len(index_str) // (alphabet_size - sigma)):])
         sigma_replacement = int(sigma_index[0])
         index = int(sigma_index[1:], base=alphabet_size)
@@ -171,9 +175,9 @@ def decode_knuth(string, alphabet_size, orig_length):
     @orig_length is the length of @string before the encoding.
     """
     strings = split_string(string, alphabet_size, orig_length)
-    strings = strings[:-1] # = strings[-1][:(len(strings[-1]) // alphabet_size)]
+    strings = strings[:-1]
 
-    for i in range(len(strings) - 1, 0, -1):
+    for i in range(len(strings) - 1, 0, -1): #iteratively decode the string according to the algortihm.
         strings[i - 1] = sub_decode(strings[i - 1], strings[i], alphabet_size)
 
     return strings[0]
